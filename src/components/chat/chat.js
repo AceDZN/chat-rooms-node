@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme)=>({
   }
 }));
 
-const Chat = ({ActiveRoom, userId, userName,users,conversation}) => {
+const Chat = ({ActiveRoom, userId, userName,users}) => {
     
   const classes = useStyles();
   const [messageValue, setMessageValue] = useState('');
@@ -68,8 +68,9 @@ const Chat = ({ActiveRoom, userId, userName,users,conversation}) => {
 
     useEffect(()=>{
         clearTimeout(fetchChatTimeout);
+        console.log('clearTimeOut',ActiveRoom);
         fetchRoomConversation({roomId: ActiveRoom.id })
-    }, [conversation.length]);
+    }, [ActiveRoom.conversation.length]);
 
   const handleMessageValueChange = (e)=>{
     setMessageValue(e.target.value);

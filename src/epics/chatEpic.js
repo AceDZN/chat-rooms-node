@@ -25,7 +25,7 @@ export const fetchChatRoomsEpic = (action$) => action$.pipe(
     })
 )
 
-/*
+
 export const setActiveRoomTextEpic = (action$) => action$.pipe(
     ofType(Actions.SET_ACTIVE_ROOM),
     switchMap((action) =>{
@@ -38,29 +38,24 @@ export const setActiveRoomTextEpic = (action$) => action$.pipe(
 
     })
 )
-*/
 
-export const setRoomTextEpic = (action$, state) => action$.pipe(
-    ofType(Actions.SET_ROOM_TEXT),
-    switchMap((action) =>{
-        const {chatReducer} = state.value;
-        console.log(action,"SET_ROOM_TEXT action");
-        return of()
-    
 
-    })
-)
+
 
 export const fetchRoomCoversationEpic = (action$) => action$.pipe(
     ofType(Actions.FETCH_ROOM_CONVERSATION),
     switchMap((action) =>{
         if(action.roomId || action.roomId === 0){
-            return  getJSON(`${URLS.ROOMS}/${action.roomId}/text`).pipe(
-                switchMap(response =>{return of(Actions.setRoomText(response.text))}),
+            return getJSON(`${URLS.ROOMS}/${action.roomId}/text`).pipe(
+                mergeMap(response => {
+                   
+                    return of(Actions.setRoomText(response.text))
+                }),
                 catchError(error => of(Actions.fetchRejected(error)))
             )
         }
-        return of(Actions.setRoomText(''))
+    
+    return of(Actions.setRoomText(''))
 
     })
 )
@@ -84,27 +79,17 @@ export const sendMessageEpic = (action$) => action$.pipe(
 
 
 
-export const getActiveRoomUsersEpic = (action$) => action$.pipe(
-    ofType(Actions.FETCH_USERS_IN_ROOM),
-    switchMap(({ roomId }) =>{
-        if(roomId){
-            return getJSON(`${URLS.ROOMS}/${roomId}/users`).pipe(
-                mergeMap(response => {
-                    return of(Actions.setRoomUsers(response.users))
-                }),
-                catchError(error => of(Actions.fetchRejected(error)))
-            )
-        }
-        return of(Actions.setRoomUsers([]))
-    })
-)
-
 
 export const setActiveRoomUsersEpic = (action$) => action$.pipe(
     ofType(Actions.SET_ACTIVE_ROOM),
     switchMap(({ activeRoom }) =>{
         if(activeRoom.id){
-            return of(Actions.fetchUsersInRoom(activeRoom.id))
+            return getJSON(`${URLS.ROOMS}/${activeRoom.id}/users`).pipe(
+                mergeMap(response => {
+                    return of(Actions.setRoomUsers(response.users))
+                }),
+                catchError(error => of(Actions.fetchRejected(error)))
+            )
         }
         return of(Actions.setRoomUsers([]))
     })

@@ -102,7 +102,7 @@ const Conversation = ({conversation, userId, users, ActiveRoomId, ActiveRoom}) =
       const lastMessage = conversationWindow.current.querySelector(`.${classes.messageWrap}:last-child`);
       conversationWindow.current.scrollTop = conversationWindow.current.scrollHeight;
     }
-  },[conversation])
+  },[ conversation.length ])
 
 
 
