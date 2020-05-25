@@ -32,7 +32,7 @@ const Login =  (props)=>{
     }
 
     const handleKeyDown = (e) =>{
-        if (e.keyCode == 13) {
+        if (e.keyCode === 13) {
             handleLogin();
         }
     }
@@ -44,7 +44,6 @@ const Login =  (props)=>{
     }
     
     useEffect(() => {
-        console.log('login useeffect', props);
         if(userId && userId !== '') props.history.push('/Rooms');
     }, [userId])
 

@@ -1,6 +1,6 @@
-import { of, Observable, timer  } from 'rxjs'
+import { of } from 'rxjs'
 import {getJSON,postJSON} from '../utils/utils';
-import { switchMap, mergeMap, debounceTime, catchError,takeUntil, filter, tap, take, share, mapTo} from 'rxjs/operators'
+import { switchMap, mergeMap, catchError} from 'rxjs/operators'
 import { ofType } from 'redux-observable'
 import Actions from '../actions'
 
@@ -10,8 +10,6 @@ const URLS = {
     USERS: 'http://localhost:3001/users',
     ROOMS: 'http://localhost:3001/rooms',
 }
-
-
 
 export const setUserEpic = (action$) => action$.pipe(
     ofType(Actions.SET_USER),
@@ -25,9 +23,7 @@ export const setUserEpic = (action$) => action$.pipe(
 export const getUsersEpic = (action$, state) => action$.pipe(
     ofType(Actions.GET_USERS),
     switchMap((action) =>{
-        console.log(action,"GET_USERS")
         const {userReducer} = state.value;
-
         return  getJSON(`${URLS.USERS}`).pipe(
                 switchMap(response => {
                     if(response.length !== userReducer.users.length){
@@ -64,8 +60,6 @@ export const createUserEpic = (action$) => action$.pipe(
     ofType(Actions.CREATE_USER),
     switchMap((action) =>{
         const { userName } = action;
-        console.log(action,"CREATE_USER")
-
         return  postJSON(`${URLS.USERS}`,{ name: userName }).pipe(
                 switchMap(({response} )=> {
                     return of(Actions.setUser({userId: response.userId, userName:userName}))

@@ -1,9 +1,7 @@
 import Actions from '../actions'
-const initialState = {users:[]};
+const initialState = { users: [] };
 
 const userReducer = (state = initialState, action) => {
-  console.log(action,`${action.type}`);
-
     switch (action.type) {
       case Actions.GET_USERS:
         return {
@@ -40,13 +38,11 @@ const userReducer = (state = initialState, action) => {
             t.id === thing.id && t.name === thing.name
           ))
         )
-
-        console.log(allUsers,"allUsers");
         return {
           ...state,
           users: allUsers.reduce((acc,cur)=>{
             const newUserObj = cur;
-            if(!newUserObj.color) newUserObj.color =  "#"+((1<<24)*Math.random()|0).toString(16);
+            if(!newUserObj.color) newUserObj.color =  "hsla(" + ~~(360 * Math.random()) + ", 50%, 60%, 1)";
             acc.push(newUserObj)
             return acc
           },[])

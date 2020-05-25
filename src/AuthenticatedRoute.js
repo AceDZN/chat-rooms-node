@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { Route, Redirect } from 'react-router-dom';
 
 const AuthenticatedRoute = ({component: Component, ...rest}) => {
-  console.log(rest,"rest");
     return rest.userId
         ? <Route render={ props => <Component {...props} {...rest} />} />
         : <Redirect to="/" />;

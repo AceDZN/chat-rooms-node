@@ -1,10 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { connect, useDispatch } from 'react-redux'
+import { connect } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ListItem from '@material-ui/core/ListItem';
-import Actions from '../../actions'
-
 
 const useStyles = makeStyles((theme)=>({
   conversation:{
@@ -18,10 +16,14 @@ const useStyles = makeStyles((theme)=>({
     padding: '0 16px',
     backgroundColor: "#f5fbff",
 
-  '&::-webkit-scrollbar' :{
-    width: '0px',
-    background: 'transparent',
-  }
+    '&::-webkit-scrollbar' :{
+      width: '2px',
+      background: 'transparent',
+    },
+    '&::-webkit-scrollbar-thumb' :{
+      borderRadius: '2px 0 0 2px',
+      background: 'rgba(0, 0, 0, 0.42)',
+    }
   },
   messageWrap:{
     display: 'block'
@@ -91,57 +93,50 @@ const useStyles = makeStyles((theme)=>({
   }
 }));
 
-const Conversation = ({conversation, userId, users, ActiveRoomId, ActiveRoom}) => {
+const Conversation = ({conversation, userId, users}) => {
   const classes = useStyles();
   const conversationWindow = useRef(null);
-  const dispatch = useDispatch();
-
-
   useEffect(()=>{
     if(conversationWindow.current){
-      const lastMessage = conversationWindow.current.querySelector(`.${classes.messageWrap}:last-child`);
       conversationWindow.current.scrollTop = conversationWindow.current.scrollHeight;
     }
-  },[ conversation.length ])
-
-
-
+  },[ conversation.length ]);
+  
+  const renderMessage = (message, index)=>{
+    const currentUser = users.filter((user)=>user.id ===  message.userId);
+    const isFirst = index === 0 || conversation[index-1].userId !== message.userId;
+    return (
+      <ListItem key={`chat_text_${index}`} className={classes.messageWrap}>
+          <Grid container className={`${classes.message} ${message.userId === userId ? classes.self : 'other'} ${isFirst ? 'with-arrow':''}`}>
+              { userId !== message.userId ? (
+                <Grid item xs={12} className={classes.sender} style={{color: users[message.userId] ? users[message.userId].color : "#"+((1<<12)*Math.random()|0).toString(16)}}>
+                  { currentUser[0].name }
+                </Grid>
+              ) : null}
+              <Grid item xs={12}className={classes.text}> 
+                {message.text}
+              </Grid>
+              <Grid item xs={12} className={classes.time}>
+                09:30
+              </Grid>
+          </Grid>
+        </ListItem>
+        
+    ) 
+  }
 
   return (
       <div className={classes.conversation} ref={conversationWindow}>
-        {users.length && conversation && conversation.map((message,index)=>{
-
-          const currentUser = users.filter((user)=>user.id ===  message.userId);
-          const isFirst = index === 0 || conversation[index-1].userId !== message.userId;
-          return currentUser[0] ? (
-            <ListItem key={`chat_text_${index}`} className={classes.messageWrap}>
-                <Grid container className={`${classes.message} ${message.userId === userId ? classes.self : 'other'} ${isFirst ? 'with-arrow':''}`}>
-                    { userId !== message.userId ? <Grid item xs={12} className={classes.sender} style={{color: users[message.userId] ? users[message.userId].color : "#"+((1<<24)*Math.random()|0).toString(16)}}>
-                    { currentUser[0].name }
-                    </Grid> : null}
-                    <Grid item xs={12}className={classes.text}> 
-                      {message.text}
-                    </Grid>
-                    <Grid item xs={12} className={classes.time}>
-                      09:30
-                    </Grid>
-                </Grid>
-            </ListItem>
-            
-        ) : null })
-        } 
-        </div>
+        {conversation && conversation.map(renderMessage)}
+      </div>
   )
 }
 
 const mapStateToProps = ({ userReducer, chatReducer }) => {
     return {
       users: userReducer.users,
-      userName: userReducer.userName,
       userId: userReducer.userId,
-      ActiveRoom:chatReducer.ActiveRoom,
-      ActiveRoomId:chatReducer.ActiveRoom.id,
-      conversation: chatReducer.ActiveRoom.conversation
+      conversation: chatReducer.activeRoom.conversation
     }
   }
   export default connect(

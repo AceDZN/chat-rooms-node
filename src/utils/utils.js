@@ -22,7 +22,7 @@ export const postJSON = (url, body, headers = {}) => {
   })
 }
 
-export const remove = (url, headers = {}) => {
+export const removeJSON = (url, headers = {}) => {
   return ajax.delete(url, {
     ...headers
   })

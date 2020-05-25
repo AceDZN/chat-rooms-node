@@ -1,7 +1,7 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect, useDispatch } from 'react-redux'
-import { List, ListItem, ListItemText, Grid,Button} from '@material-ui/core';
+import { List, ListItem, ListItemText, Grid} from '@material-ui/core';
 import { Link } from "react-router-dom";
 
 import Actions from '../../actions'
@@ -35,12 +35,19 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const Rooms = ({chatRooms,userName,userId, history}) => {
+const Rooms = ({chatRooms, userName, userId, history, activeRoom}) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  useEffect(()=>{
+    if(activeRoom && (activeRoom.id || activeRoom.id === 0)){
+      dispatch(Actions.leaveActiveRoom(activeRoom, userId));
+    }
+  }, [])
+
+
   const handleClickOnRoom = (room)=>{
-    dispatch(Actions.setActiveRoom(room))
+    dispatch(Actions.setActiveRoom(room, userId))
     history.push('/Chat');
   }
 
@@ -50,7 +57,6 @@ const Rooms = ({chatRooms,userName,userId, history}) => {
   }
 
   const renderChatRooms = (chatRooms) =>{
-      
         return chatRooms && chatRooms.length ? (
             <List  spacing={8}>
             {chatRooms.map((room)=>{
@@ -88,7 +94,8 @@ const mapStateToProps = ({ userReducer, chatReducer }) => {
     return {
       userName: userReducer.userName,
       userId: userReducer.userId,
-      chatRooms: chatReducer.chatRooms
+      chatRooms: chatReducer.chatRooms,
+      activeRoom: chatReducer.activeRoom
     }
   }
   export default connect(

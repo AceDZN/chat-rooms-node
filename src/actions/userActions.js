@@ -36,9 +36,6 @@ const setUsers = users => ({
   users
 })
 
-
-
-
 export default {
   GET_USERS,
   CREATE_USER,

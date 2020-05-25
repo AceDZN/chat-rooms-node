@@ -2,6 +2,7 @@ const FETCH_CHAT_ROOMS = 'FETCH_CHAT_ROOMS';
 const FETCH_REJECTED = 'FETCH_REJECTED';
 const SET_CHAT_ROOMS = 'SET_CHAT_ROOMS';
 const SET_ACTIVE_ROOM = 'SET_ACTIVE_ROOM';
+const LEAVE_ACTIVE_ROOM = 'LEAVE_ACTIVE_ROOM';
 const SET_ROOM_TEXT = 'SET_ROOM_TEXT';
 const SET_ROOM_USERS = 'SET_ROOM_USERS';
 const SEND_MESSAGE = 'SEND_MESSAGE';
@@ -25,10 +26,18 @@ const setChatRooms = chatRooms => ({
     chatRooms
 })
 
-const setActiveRoom = activeRoom => ({
+const setActiveRoom = (activeRoom, userId) => ({
     type: SET_ACTIVE_ROOM,
-    activeRoom
+    activeRoom,
+    userId
 })
+
+const leaveActiveRoom = (activeRoom, userId) => ({
+    type: LEAVE_ACTIVE_ROOM,
+    activeRoom,
+    userId
+})
+
 
 const setRoomText = conversation => ({
     type: SET_ROOM_TEXT,
@@ -66,6 +75,7 @@ export default {
     FETCH_REJECTED,
     SET_CHAT_ROOMS,
     SET_ACTIVE_ROOM,
+    LEAVE_ACTIVE_ROOM,
     SET_ROOM_TEXT,
     SET_ROOM_USERS,
     SEND_MESSAGE,
@@ -76,6 +86,7 @@ export default {
     fetchRejected,
     setChatRooms,
     setActiveRoom,
+    leaveActiveRoom,
     setRoomText,
     setRoomUsers,
     sendMessage,

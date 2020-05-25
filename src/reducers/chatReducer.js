@@ -1,7 +1,6 @@
 import Actions from '../actions'
 
 const chatReducer = (state = [], action) => {
-    console.log(action,"ACTION");
 
     switch (action.type) {
         case Actions.FETCH_CHAT_ROOMS:
@@ -19,16 +18,28 @@ const chatReducer = (state = [], action) => {
         case Actions.SET_ACTIVE_ROOM:
             return {
                 ...state,
-                ActiveRoom: {
+                activeRoom: {
                     ...action.activeRoom,
                     conversation: []
-                }
+                },
+                userId: action.userId
             }
+        
+        case Actions.LEAVE_ACTIVE_ROOM:
+            return {
+                ...state,
+                activeRoom: {
+                    ...action.activeRoom,
+                    conversation: []
+                },
+                userId: action.userId
+            }
+            
         case Actions.SET_ROOM_TEXT:
             return {
                 ...state,
-                ActiveRoom: {
-                    ...state.ActiveRoom,
+                activeRoom: {
+                    ...state.activeRoom,
                     conversation: action.conversation
                 }
             }
@@ -42,8 +53,8 @@ const chatReducer = (state = [], action) => {
         case Actions.SET_ROOM_USERS:
             return {
                 ...state,
-                ActiveRoom: {
-                    ...state.ActiveRoom,
+                activeRoom: {
+                    ...state.activeRoom,
                     users: action.roomUsers
                 }
             }
@@ -51,7 +62,7 @@ const chatReducer = (state = [], action) => {
         case Actions.FETCH_ROOM_CONVERSATION:
             return {
                 ...state,
-                roomId: state.ActiveRoom.id,
+                roomId: state.activeRoom.id,
                 ts: Date.now()
             }
 

@@ -1,0 +1,13 @@
+{
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": true,
+  "trailingComma": "all",
+  "singleQuote": true,
+  "printWidth": 70,
+  "editor.formatOnSave": true,
+  // Enable per-language
+  "[javascript]": {
+      "editor.formatOnSave": true
+  }
+}
